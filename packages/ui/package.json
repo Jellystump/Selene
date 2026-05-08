@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./assets/*": "./assets/*",
+    "./components": "./src/index.tsx",
     "./*": "./src/*.tsx"
   },
   "scripts": {

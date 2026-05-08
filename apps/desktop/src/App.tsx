@@ -1,33 +1,50 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
+import { getMoonPhase } from  "@selene/astronomy";
+import { MoonImg } from "@selene/ui";
 import "./App.css";
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+
+
+  const [phase, setPhase] = useState(0);
+
+  async function updateMoon() {
+    const currentPhase = getMoonPhase(new Date());
+    setPhase(currentPhase);
+  }
+const isWaxing = phase < 180;
+  
+  const rotationY = phase;
 
   async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+    setGreetMsg(String(getMoonPhase(new Date(Date.now()))));
   }
 
   return (
     <main className="container">
-      <h1>Welcome to Tauri + React</h1>
 
       <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div 
+          className="moon-container" 
+          style={{ '--moon-img': `url(${MoonImg.full})` } as any}
+        >
+          {/*  Luna Llena  */}
+         <div className="discFull"></div>
+
+          {/* Sombra Estática */}
+          <div className="moon-half-shadow" style={{
+            left: isWaxing ? 0 : '50%',
+            opacity: (phase === 180) ? 0 : 1 // Desaparece en Luna Llena pura
+          }} />
+
+          {/* Disco Rotatorio */}
+          <div className="disc" style={{ transform: `rotateY(${rotationY}deg)` }}>
+          </div>
+        </div>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
       <form
         className="row"
@@ -36,12 +53,7 @@ function App() {
           greet();
         }}
       >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
+        <button onClick={updateMoon}>Calcular Fase Actual</button>
       </form>
       <p>{greetMsg}</p>
     </main>

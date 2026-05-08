@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@selene/ui": ["packages/ui/src/index.ts"],
+      "@selene/astronomy": ["packages/astronomy/index.ts"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

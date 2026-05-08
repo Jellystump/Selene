@@ -11,8 +11,8 @@
   line-height: 24px;
   font-weight: 400;
 
-  color: #0f0f0f;
-  background-color: #f6f6f6;
+  color: #F0F1F4;
+  background-color: #1E2129;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,16 +20,94 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+.container{
+  padding: 80px;
+}
+.moon-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    0 0 20px 5px #a07eff,
+    0 0 50px 15px #9394ff;
+    margin-bottom: 80px;
 }
 
+.moon-texture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.moon-half-shadow {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #0a0a0a;
+  
+  z-index: 1;
+}
+.disc-container {
+  perspective: 1000px; 
+}
+.discFull {
+
+  background-color: #fff;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+}
+
+.disc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  aspect-ratio: 1 / 1;
+  z-index: 2;
+  transition: transform 0.5s ease; 
+border-radius: 50%;
+  
+}
+
+.disc::before, .disc::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  filter: blur(1px); 
+}
+
+.disc::before {
+  background-color: #0a0a0a;
+  z-index: 2;
+  box-shadow:
+    0 0 30px 10px #0a0a0a,  
+    0 0 50px 12px #0a0a0a, 
+    inset 0 0 2px 1px #0a0a0a;
+}
+
+.disc::after {
+  background-color: #fff;
+  background-position: center;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  box-shadow:
+    0 0 30px 20px #fff,  
+    0 0 50px 22px #fff, 
+    inset 0 0 2px 1px rgba(255, 255, 255, 0.5);
+  
+}
 .logo {
   height: 6em;
   padding: 1.5em;
