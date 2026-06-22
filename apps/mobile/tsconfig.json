@@ -3,6 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
+      "@repo/ui": ["../../packages/ui/src/index.tsx"],
+      "@repo/ui/*": ["../../packages/ui/src/*"],
       "@/*": [
         "./*"
       ]
