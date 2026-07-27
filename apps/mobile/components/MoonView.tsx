@@ -86,9 +86,9 @@ export function MoonView({ phase: initialPhase, animated = false }: MoonViewProp
 
 const styles = StyleSheet.create({
   moonContainer: {
-    flex: 1,               // 👈 Fills up the entire space assigned to cardContainerView1
-    width: '100%',         // 👈 Ensures it stretches horizontally
-    height: '100%',        // 👈 Ensures it stretches vertically
+    flex: 1,               
+    width: '100%',         
+    height: '100%',       
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent' 

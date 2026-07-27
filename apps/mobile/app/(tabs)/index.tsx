@@ -1,11 +1,14 @@
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { MoonView } from '@/components/MoonView';
+import { SelHeaderText } from '@/components/SelHeaderText';
 import { getMoonPhase, getMoonIllumination } from  "@selene/astronomy";
 import * as Location from 'expo-location';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Colors } from '@repo/ui';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AstroCalendar } from '@/components/AstroCalendar';
+import { useColorScheme } from 'react-native';
 
 export default function TabOneScreen() {
   const [phase, setPhase] = useState<number>(0);
@@ -15,6 +18,9 @@ export default function TabOneScreen() {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [phaseName, setPhaseName] = useState<string | null>(null);
   const [percentage, setPercentage] = useState<number>(0);
+
+  const colorScheme = useColorScheme();
+  const styles = useStyles();
 
   useEffect(() => {
   const currentPhase = getMoonPhase(new Date());
@@ -69,96 +75,103 @@ export default function TabOneScreen() {
 
   return (
     <LinearGradient
-      colors={[Colors.brand.dark1, Colors.brand.dark2]}
-      /* colors={[Colors.brand.light1, Colors.brand.light2]} */
+      colors={[colorScheme === 'dark' ? Colors.brand.dark1 : Colors.brand.light1, colorScheme === 'dark' ? Colors.brand.dark2 : Colors.brand.light2]}
       start={{ x: 1, y: 0 }}
       end={{ x: 0, y: 1.5 }}
-      style={styles.gradient}
+      style={[styles.gradient, {paddingVertical: 50}]}
     >
-      <View style={[styles.cardContainer]}>
-        <View style={[styles.cardContainerMoonView]}>
-          <MoonView phase={phase} animated={isAnimating} />
-        </View>
-        
+      <ScrollView>
+        <SelHeaderText>Selene</SelHeaderText>
 
-        <View style={[styles.cardContainerTextView]}>
-          <Text style={[styles.title]}>{phaseName}</Text>
-          <LinearGradient
-            colors={['transparent', Colors.brand.gray, 'transparent']}
+        <View style={[styles.cardContainer]}>
+          <View style={[styles.cardContainerMoonView]}>
+            <MoonView phase={phase} animated={isAnimating} />
+          </View>
+
+
+          <View style={[styles.cardContainerTextView]}>
+            <Text style={[styles.title]}>{phaseName}</Text>
+            <LinearGradient
+            colors={['transparent', Colors.brand.pcDark, 'transparent']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }} 
             style={styles.gradientSeparator}
-          />
-          <Text style={styles.percentageText}>
+            />
+            <Text style={styles.percentageText}>
             {percentage}%
-          </Text>
+            </Text>
+          </View>
         </View>
-      </View>
 
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => setIsAnimating(!isAnimating)}
-      >
-        <Text style={styles.title}>
-          {isAnimating ? "Detener Animación" : "Animar Ciclo Completo"}
-        </Text>
-      </TouchableOpacity>
+        <SelHeaderText>Astronomical events</SelHeaderText>
+
+        <View style={[styles.cardContainerTextView]}>
+          <AstroCalendar/>
+        </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.brand.light2,
-  },
-  separator: {
-    marginVertical: 15,
-    height: 1,
-    width: '80%',
-  },
-  gradient: {
-    flex: 1,
-  },
-  cardContainer: {
-    backgroundColor: 'rgba(7, 23, 51, 0.51)', 
-    borderRadius: 25,
-    marginVertical: 50,
-    marginHorizontal: 15,
-    paddingVertical: 25,
-    paddingHorizontal: 15,
-    flexDirection: 'row',
-    alignItems: 'center', 
-  },
-  cardContainerMoonView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardContainerTextView: {
-    flex: 1.25, 
-    alignItems: 'center', 
-    justifyContent: 'center',
-    
-    paddingLeft: 10,
-  },
-  gradientSeparator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-    alignSelf: 'center',
-  },
-  percentageText: {
-    color: '#999999',
-    fontSize: 18,
-    fontWeight: '600',
-    letterSpacing: 1
-  }
-});
+function useStyles() { 
+  const colorScheme = useColorScheme();
+
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colorScheme === 'dark' ? Colors.brand.light2 : Colors.brand.dark2,
+    },
+    separator: {
+      marginVertical: 15,
+      height: 1,
+      width: '80%',
+    },
+    gradient: {
+      flex: 1,
+    },
+    cardContainer: {
+      backgroundColor: colorScheme === 'dark' ? Colors.brand.cardDarkBg : Colors.brand.cardLightBg,
+      height: 165,
+      borderRadius: 25,
+      borderColor: colorScheme === 'dark' ? Colors.brand.superLightBlue : Colors.brand.lightBlue,
+      borderWidth: .5,
+      marginVertical: 50,
+      marginHorizontal: 25,
+      paddingVertical: 25,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      alignItems: 'center', 
+    },
+    cardContainerMoonView: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cardContainerTextView: {
+      flex: 1.25, 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      paddingLeft: 10,
+    },
+    gradientSeparator: {
+      marginTop: 30,
+      marginBottom: 15,
+      height: 1.5,
+      width: '80%',
+      alignSelf: 'center',
+    },
+    percentageText: {
+      color: colorScheme === 'dark' ? Colors.brand.pcLight : Colors.brand.pcDark,
+      fontSize: 18,
+      fontWeight: '600',
+      letterSpacing: 1
+    }
+  })
+};

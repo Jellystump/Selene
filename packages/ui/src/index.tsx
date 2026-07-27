@@ -1,7 +1,9 @@
-import moonImg from '../assets/moon.png';
+import * as moon from '../assets/moon.png'; 
+
+
 
 export const MoonImg = {
-    full: moonImg,
+    full: moon,
 };
 
 /*Theme exports*/ 
