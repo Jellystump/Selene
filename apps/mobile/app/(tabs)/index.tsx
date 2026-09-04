@@ -5,7 +5,7 @@ import { SelHeaderText } from '@/components/SelHeaderText';
 import { getMoonPhase, getMoonIllumination } from  "@selene/astronomy";
 import * as Location from 'expo-location';
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { Colors } from '@repo/ui';
+import { Colors } from '@selene/ui';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AstroCalendar } from '@/components/AstroCalendar';
 import { useColorScheme } from 'react-native';

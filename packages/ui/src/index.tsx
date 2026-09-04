@@ -7,4 +7,4 @@ export const MoonImg = {
 };
 
 /*Theme exports*/ 
-export * from '../theme/colors';
+export * from './constants/Colors';

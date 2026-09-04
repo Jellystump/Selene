@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Colors } from '@repo/ui';
 
-LocaleConfig.locales['es'] = {
+/*LocaleConfig.locales['es'] = {
   monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
   monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
   dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
@@ -11,6 +11,15 @@ LocaleConfig.locales['es'] = {
   today: 'Hoy'
 };
 LocaleConfig.defaultLocale = 'es';
+*/
+LocaleConfig.locales['en'] = {
+  monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  today: 'Today'
+};
+LocaleConfig.defaultLocale = 'en';
 
 export function AstroCalendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -71,10 +80,10 @@ export function AstroCalendar() {
       {/* Mostrar descripción del evento seleccionado abajo */}
       <View style={styles.infoBox}>
         <Text style={styles.infoTitle}>
-          {selectedDate ? `Fecha: ${selectedDate}` : 'Selecciona un día con punto'}
+          {selectedDate ? `Fecha: ${selectedDate}` : 'Select a date'}
         </Text>
         <Text style={styles.infoText}>
-          {events[selectedDate as keyof typeof events]?.description || 'No hay eventos astronómicos importantes para este día.'}
+          {events[selectedDate as keyof typeof events]?.description || "There's no relevant astronomical events."}
         </Text>
       </View>
     </View>

@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  transpilePackages: ["@selene/astronomy", "@selene/ui"],
+};
 
 export default nextConfig;
