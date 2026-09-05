@@ -5,6 +5,7 @@ import { getMoonPhase, getMoonIllumination } from "@selene/astronomy";
 import { MoonView } from "./components/MoonView";
 import { Colors } from '@selene/ui';
 import styles from "./page.module.css";
+import { SeleneCalendar } from './SeleneCalendar';
 
 export default function Home() {
   const [phase, setPhase] = useState<number>(0);
@@ -83,7 +84,6 @@ export default function Home() {
 
           <div className={styles.heroTitle}>
             <h1>{phaseName}</h1>
-            <p className={styles.subtext}>{percentage}% Illuminated</p>
           </div>
         </section>
 
@@ -112,14 +112,26 @@ export default function Home() {
             </div>
           </div>
 
-
-
           {locationError && (
             <div className={styles.errorNotice}>
               ⚠️ {locationError}
             </div>
           )}
         </aside>
+      </div>
+
+      <div className={styles.dashboard}>
+        <SeleneCalendar/>
+        <div className={styles.card}>
+            <span className={styles.cardLabel}>Events</span>
+            <span className={styles.cardValue}>{phase.toFixed(1)}°</span>
+            <div className={styles.progressBar}>
+              <div 
+                className={styles.progressFill} 
+                style={{ width: `${(phase / 360) * 100}%` }} 
+              />
+            </div>
+            </div>
       </div>
     </main>
   );
