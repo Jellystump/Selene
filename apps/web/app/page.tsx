@@ -6,7 +6,6 @@ import { MoonView } from "./components/MoonView";
 import { Colors } from '@selene/ui';
 import styles from "./page.module.css";
 import { SeleneCalendar } from './SeleneCalendar';
-import { EventClickArg } from '@fullcalendar/core';
 
 interface EventAPI {
   title?: string;
@@ -30,6 +29,15 @@ interface CalendarEvent {
   borderColor?: string;
   extendedProps: {
     description: string;
+  };
+}
+
+interface SimpleEventClickArg {
+  event: {
+    title: string;
+    extendedProps: {
+      description?: string;
+    };
   };
 }
 
@@ -113,7 +121,7 @@ export default function Home() {
   }, [coords]);
 
 
-  const handleEventClick = (info: EventClickArg): void => {
+  const handleEventClick = (info: SimpleEventClickArg): void => {
     const title = info.event.title;
     const description = info.event.extendedProps.description;
     alert(`Event: ${title}\nDetails: ${description}`);
