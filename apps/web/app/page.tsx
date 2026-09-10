@@ -9,6 +9,7 @@ import { SeleneCalendar } from './SeleneCalendar';
 import { EventClickArg } from '@fullcalendar/core';
 
 interface EventAPI {
+  title?: string;
   event_name?: string;
   date?: string;
   description?: string;
@@ -39,7 +40,9 @@ export default function Home() {
   const [phaseName, setPhaseName] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     const now = new Date();
@@ -65,9 +68,13 @@ export default function Home() {
 
   useEffect(() => {
     const fetchEvents = async (): Promise<void> => {
-      setLoading(true);
-      const response = await fetch(
-          `https://astronomyapi.com{LATITUDE}&longitude=${LONGITUDE}`,
+      try {
+        setLoading(true);
+        const lat = coords?.latitude ?? 0;
+        const lon = coords?.longitude ?? 0;
+
+        const response = await fetch(
+          `https://astronomyapi.com/api/v2/bodies/positions?latitude=${lat}&longitude=${lon}`,
           {
             headers: {
               'Authorization': `Basic ${btoa('YOUR_APP_ID:YOUR_APP_SECRET')}`,
@@ -81,11 +88,10 @@ export default function Home() {
 
         const data: AstronomyApiResponse = await response.json();
 
-        // 3. Type-safe transformation mapping
-        const formattedEvents: CalendarEvent[] = data.data.rows.map((event, index) => ({
+        const formattedEvents: CalendarEvent[] = (data.data?.rows || []).map((event, index) => ({
           id: `astro-${index}`,
           title: event.title || event.event_name || 'Celestial Event',
-          start: event.date,
+          start: event.date || new Date().toISOString(),
           allDay: true,
           backgroundColor: '#1a1a2e',
           borderColor: '#16c79a',
@@ -96,13 +102,15 @@ export default function Home() {
 
         setEvents(formattedEvents);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setApiError(err instanceof Error ? err.message : 'An unknown error occurred');
         console.error('Error fetching celestial data:', err);
       } finally {
         setLoading(false);
       }
-      fetchEvents();
-  }, []);
+    };
+
+    fetchEvents();
+  }, [coords]);
 
 
   const handleEventClick = (info: EventClickArg): void => {
