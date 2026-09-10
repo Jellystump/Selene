@@ -10,7 +10,7 @@ interface MoonViewProps {
 
 export function MoonView({ phase: initialPhase, animated = false }: MoonViewProps) {  
   const [currentPhase, setCurrentPhase] = useState(initialPhase);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!animated) {

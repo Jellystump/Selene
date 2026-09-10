@@ -6,8 +6,34 @@ import { MoonView } from "./components/MoonView";
 import { Colors } from '@selene/ui';
 import styles from "./page.module.css";
 import { SeleneCalendar } from './SeleneCalendar';
+import { EventClickArg } from '@fullcalendar/core';
+
+interface EventAPI {
+  event_name?: string;
+  date?: string;
+  description?: string;
+}
+
+interface AstronomyApiResponse {
+  data: {
+    rows: EventAPI[];
+  };
+}
+
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  allDay: boolean;
+  backgroundColor?: string;
+  borderColor?: string;
+  extendedProps: {
+    description: string;
+  };
+}
 
 export default function Home() {
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [phase, setPhase] = useState<number>(0);
   const [percentage, setPercentage] = useState<number>(0);
   const [phaseName, setPhaseName] = useState<string>('');
@@ -36,6 +62,54 @@ export default function Home() {
     setPhaseName(name);
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const fetchEvents = async (): Promise<void> => {
+      setLoading(true);
+      const response = await fetch(
+          `https://astronomyapi.com{LATITUDE}&longitude=${LONGITUDE}`,
+          {
+            headers: {
+              'Authorization': `Basic ${btoa('YOUR_APP_ID:YOUR_APP_SECRET')}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data: AstronomyApiResponse = await response.json();
+
+        // 3. Type-safe transformation mapping
+        const formattedEvents: CalendarEvent[] = data.data.rows.map((event, index) => ({
+          id: `astro-${index}`,
+          title: event.title || event.event_name || 'Celestial Event',
+          start: event.date,
+          allDay: true,
+          backgroundColor: '#1a1a2e',
+          borderColor: '#16c79a',
+          extendedProps: {
+            description: event.description || 'No further description available.',
+          },
+        }));
+
+        setEvents(formattedEvents);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        console.error('Error fetching celestial data:', err);
+      } finally {
+        setLoading(false);
+      }
+      fetchEvents();
+  }, []);
+
+
+  const handleEventClick = (info: EventClickArg): void => {
+    const title = info.event.title;
+    const description = info.event.extendedProps.description;
+    alert(`Event: ${title}\nDetails: ${description}`);
+  };
 
   const updateLocation = () => {
     setLoading(true);
