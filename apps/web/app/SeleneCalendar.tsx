@@ -7,7 +7,7 @@ import '@fullcalendar/react/skeleton.css'; // ALWAYS NEED SKELETON
 import '@fullcalendar/react/themes/monarch/theme.css'; // YOUR THEME
 import '@fullcalendar/react/themes/monarch/palettes/purple.css';
 import '@fullcalendar/common/main.css';
-import '@fullcalendar/daygrid/main.css';
+
 
 interface SimpleEventClickArg {
   event: {
