@@ -1,11 +1,11 @@
 'use client';
 import FullCalendar, { useCalendarController } from "@fullcalendar/react";
-import themePlugin from "@fullcalendar/react/themes/monarch"; // YOUR THEME
+import themePlugin from "@fullcalendar/react/themes/pulse"; 
 import dayGridPlugin from "@fullcalendar/react/daygrid";
 
-import '@fullcalendar/react/skeleton.css'; // ALWAYS NEED SKELETON
-import '@fullcalendar/react/themes/monarch/theme.css'; // YOUR THEME
-import '@fullcalendar/react/themes/monarch/palettes/purple.css';
+import '@fullcalendar/react/skeleton.css'; 
+import '@fullcalendar/react/themes/pulse/theme.css'; 
+import '@fullcalendar/react/themes/pulse/palettes/blue.css';
 
 
 interface SimpleEventClickArg {
@@ -25,6 +25,7 @@ interface SeleneCalendarProps {
 export function SeleneCalendar({ events, onEventClick }: SeleneCalendarProps) {
   return (
     <FullCalendar
+      colorScheme='dark'
       plugins={[dayGridPlugin, themePlugin]}
       initialView="dayGridMonth"
       headerToolbar={{
