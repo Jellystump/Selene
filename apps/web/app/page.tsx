@@ -80,15 +80,8 @@ export default function Home() {
         setLoading(true);
         const lat = coords?.latitude ?? 0;
         const lon = coords?.longitude ?? 0;
-
-        const response = await fetch(
-          `https://astronomyapi.com/api/v2/bodies/positions?latitude=${lat}&longitude=${lon}`,
-          {
-            headers: {
-              'Authorization': `Basic ${btoa('bf7c6b84-6d85-4a9a-8b5c-7f201daef9d6:fe06a57b2f56b0968c83d95e5ce94de7e8f9ae457d31a5daa6c0b8d942e82d75dc852ef3f20070b6e21c476b9d9f4f83856d03bb6349305f3472dbc0603a2ee8d89f8bc5825d5a794672c5f03b54d664936f23b6b070e874ec15651d9de629f499e62fa7ea393e6ce39d1ba08c432876')}`,
-            },
-          }
-        );
+        
+        const response = await fetch(`/api/astronomy?latitude=${lat}&longitude=${lon}`);
 
         if (!response.ok) {
           throw new Error(`API error: ${response.status} ${response.statusText}`);
@@ -119,6 +112,7 @@ export default function Home() {
 
     fetchEvents();
   }, [coords]);
+
 
 
   const handleEventClick = (info: SimpleEventClickArg): void => {
