@@ -246,7 +246,7 @@ export default function Home() {
             borderRadius: '12px',
             width: '90%',
             maxWidth: '600px',
-            border: '1px solid #16c79a',
+            border: 'border: 1px solid rgba(255, 255, 255, 0.08);',
             boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
