@@ -6,7 +6,6 @@ import dayGridPlugin from "@fullcalendar/react/daygrid";
 import '@fullcalendar/react/skeleton.css'; // ALWAYS NEED SKELETON
 import '@fullcalendar/react/themes/monarch/theme.css'; // YOUR THEME
 import '@fullcalendar/react/themes/monarch/palettes/purple.css';
-import '@fullcalendar/common/main.css';
 
 
 interface SimpleEventClickArg {
