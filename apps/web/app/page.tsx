@@ -1,11 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { getMoonPhase, getMoonIllumination } from "@selene/astronomy";
 import { MoonView } from "./components/MoonView";
 import { Colors } from '@selene/ui';
 import styles from "./page.module.css";
 import { SeleneCalendar } from './SeleneCalendar';
+
+const DynamicMap = dynamic(() => import('./components/Map'), {
+  ssr: false,
+  loading: () => <p style={{ color: '#fff' }}>Loading map...</p>,
+});
 
 interface EventAPI {
   title?: string;
@@ -32,15 +38,6 @@ interface CalendarEvent {
   };
 }
 
-interface SimpleEventClickArg {
-  event: {
-    title: string;
-    extendedProps: {
-      description?: string;
-    };
-  };
-}
-
 export default function Home() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [phase, setPhase] = useState<number>(0);
@@ -51,6 +48,7 @@ export default function Home() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const now = new Date();
@@ -80,7 +78,7 @@ export default function Home() {
         setLoading(true);
         const lat = coords?.latitude ?? 0;
         const lon = coords?.longitude ?? 0;
-        
+
         const response = await fetch(`/api/astronomy?latitude=${lat}&longitude=${lon}`);
 
         if (!response.ok) {
@@ -113,52 +111,28 @@ export default function Home() {
     fetchEvents();
   }, [coords]);
 
-
-
-  const handleEventClick = (info: SimpleEventClickArg): void => {
-    const title = info.event.title;
-    const description = info.event.extendedProps.description;
-    alert(`Event: ${title}\nDetails: ${description}`);
-  };
-
-  const updateLocation = () => {
-    setLoading(true);
-    if (!navigator.geolocation) {
-      setLocationError('Geolocation not supported.');
-      setLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocationError(null);
-        setLoading(false);
-      },
-      () => {
-        setLocationError('Location access denied.');
-        setLoading(false);
-      }
-    );
+  const handleLocationSelected = (selectedCoords: { latitude: number; longitude: number }) => {
+    setCoords(selectedCoords);
+    setIsModalOpen(false);
   };
 
   return (
     <main className={styles.container}>
-      {/* Background ambient glow */}
       <div className={styles.glowOverlay} />
 
-      {/* Header Bar */}
       <header className={styles.header}>
         <div className={styles.logo}>SELENE</div>
         <button 
-          onClick={updateLocation} 
+          onClick={() => setIsModalOpen(true)} 
           className={styles.locationBtn}
           disabled={loading}
         >
-          {loading ? 'Locating...' : '📍 Sync Location'}
+          {coords 
+            ? `📍 ${coords.latitude.toFixed(2)}, ${coords.longitude.toFixed(2)}` 
+            : '📍 Select Location'}
         </button>
       </header>
 
-      {/* Main Content Dashboard */}
       <div className={styles.dashboard}>
         <section className={styles.heroSection}>
           <div className={styles.moonStage}>
@@ -196,27 +170,58 @@ export default function Home() {
             </div>
           </div>
 
-          {locationError && (
+          {(locationError || apiError) && (
             <div className={styles.errorNotice}>
-              ⚠️ {locationError}
+              ⚠️ {locationError || apiError}
             </div>
           )}
         </aside>
       </div>
 
       <div className={styles.dashboard}>
-        <SeleneCalendar/>
+        <SeleneCalendar />
         <div className={styles.card}>
-            <span className={styles.cardLabel}>Events</span>
-            <span className={styles.cardValue}>{phase.toFixed(1)}°</span>
-            <div className={styles.progressBar}>
-              <div 
-                className={styles.progressFill} 
-                style={{ width: `${(phase / 360) * 100}%` }} 
-              />
-            </div>
-            </div>
+          <span className={styles.cardLabel}>Events</span>
+          <span className={styles.cardValue}>{events.length}</span>
+        </div>
       </div>
+
+      {/* Map Modal */}
+      {isModalOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#1a1a2e',
+            padding: '20px',
+            borderRadius: '12px',
+            width: '90%',
+            maxWidth: '600px',
+            border: '1px solid #16c79a',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+              <h3 style={{ color: '#fff', margin: 0 }}>Click Map to Pick Location</h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2rem' }}
+              >
+                ✕
+              </button>
+            </div>
+            <DynamicMap initialCoords={coords} onSelectLocation={handleLocationSelected} />
+          </div>
+        </div>
+      )}
     </main>
   );
 }
