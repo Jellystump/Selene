@@ -74,6 +74,8 @@ export default function Home() {
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [eventCardLabel, setEventCardLabel] = useState<string>('Select an event');
+  const [eventCardDesc, setEventCardDesc] = useState<string>('Select an event to visualize its information');
 
   useEffect(() => {
     const now = new Date();
@@ -150,6 +152,8 @@ export default function Home() {
   const handleEventClick = (info: { event: { title: string; extendedProps: { description?: string } } }) => {
     const title = info.event.title;
     const description = info.event.extendedProps.description || 'No additional details.';
+    setEventCardLabel(title);
+    setEventCardDesc(description);
     alert(`Event: ${title}\n${description}`);
   };
 
@@ -218,8 +222,8 @@ export default function Home() {
       <div className={styles.dashboard}>
         <SeleneCalendar events={events} onEventClick={handleEventClick} />
         <div className={styles.card}>
-          <span className={styles.cardLabel}>Events</span>
-          <span className={styles.cardValue}>{events.length}</span>
+          <span className={styles.cardLabel}>{eventCardLabel}</span>
+          <span className={styles.cardValue}>{eventCardDesc}</span>
         </div>
       </div>
 
