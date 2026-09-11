@@ -20,12 +20,6 @@ interface EventAPI {
   description?: string;
 }
 
-interface AstronomyApiResponse {
-  data: {
-    rows: EventAPI[];
-  };
-}
-
 interface CalendarEvent {
   id: string;
   title: string;
@@ -35,6 +29,37 @@ interface CalendarEvent {
   borderColor?: string;
   extendedProps: {
     description: string;
+  };
+}
+
+interface EventHighlightDetail {
+  date: string;
+  altitude: number;
+}
+
+interface ApiEventItem {
+  type: string;
+  rise?: string;
+  set?: string;
+  extraInfo?: {
+    obscuration?: number;
+  };
+  eventHighlights?: {
+    peak?: EventHighlightDetail;
+  };
+}
+
+interface EventRowAPI {
+  body: {
+    id: string;
+    name: string;
+  };
+  events: ApiEventItem[];
+}
+
+interface AstronomyApiResponse {
+  data: {
+    rows: EventRowAPI[];
   };
 }
 
@@ -87,17 +112,23 @@ export default function Home() {
 
         const data: AstronomyApiResponse = await response.json();
 
-        const formattedEvents: CalendarEvent[] = (data.data?.rows || []).map((event, index) => ({
-          id: `astro-${index}`,
-          title: event.title || event.event_name || 'Celestial Event',
-          start: event.date || new Date().toISOString(),
-          allDay: true,
-          backgroundColor: '#1a1a2e',
-          borderColor: '#16c79a',
-          extendedProps: {
-            description: event.description || 'No further description available.',
-          },
-        }));
+        const formattedEvents: CalendarEvent[] = [];
+
+        (data.data?.rows || []).forEach((row, rowIndex) => {
+          (row.events || []).forEach((evt, evtIndex) => {
+            formattedEvents.push({
+              id: `astro-${rowIndex}-${evtIndex}`,
+              title: evt.type ? evt.type.replace(/_/g, ' ').toUpperCase() : 'Celestial Event',
+              start: evt.rise || evt.eventHighlights?.peak?.date || new Date().toISOString(),
+              allDay: true,
+              backgroundColor: '#1a1a2e',
+              borderColor: '#16c79a',
+              extendedProps: {
+                description: `Obscuration: ${evt.extraInfo?.obscuration ?? 'N/A'}`,
+              },
+            });
+          });
+        });
 
         setEvents(formattedEvents);
       } catch (err) {
