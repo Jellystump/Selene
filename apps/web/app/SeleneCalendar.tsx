@@ -26,11 +26,15 @@ interface SeleneCalendarProps {
 export function SeleneCalendar({ events, onEventClick }: SeleneCalendarProps) {
   return (
     <FullCalendar
-      plugins={[dayGridPlugin]}
+      plugins={[dayGridPlugin, themePlugin]}
       initialView="dayGridMonth"
+      headerToolbar={{
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth',
+      }}
       events={events}
-      eventClick={onEventClick} 
+      eventClick={onEventClick}
     />
   );
 }
-
