@@ -28,7 +28,7 @@ export function SeleneCalendar({ events, onEventClick }: SeleneCalendarProps) {
       plugins={[dayGridPlugin, themePlugin]}
       initialView="dayGridMonth"
       headerToolbar={{
-        left: 'prev, today',
+        left: 'prev today',
         center: 'title',
         right: 'next',
       }}
