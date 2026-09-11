@@ -154,7 +154,6 @@ export default function Home() {
     const description = info.event.extendedProps.description || 'No additional details.';
     setEventCardLabel(title);
     setEventCardDesc(description);
-    alert(`Event: ${title}\n${description}`);
   };
 
   return (
