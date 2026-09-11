@@ -6,8 +6,8 @@ export async function GET(request: NextRequest) {
   const longitude = searchParams.get('longitude') || '0';
 
   const today = new Date();
-  const nextYear = new Date();
-  nextYear.setDate(today.getDate() + 30); 
+  const nextYear = new Date(today);
+  nextYear.setFullYear(today.getFullYear() + 5); 
 
   const from_date = today.toISOString().split('T')[0];
   const to_date = nextYear.toISOString().split('T')[0];
