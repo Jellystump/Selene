@@ -147,6 +147,12 @@ export default function Home() {
     setIsModalOpen(false);
   };
 
+  const handleEventClick = (info: { event: { title: string; extendedProps: { description?: string } } }) => {
+    const title = info.event.title;
+    const description = info.event.extendedProps.description || 'No additional details.';
+    alert(`Event: ${title}\n${description}`);
+  };
+
   return (
     <main className={styles.container}>
       <div className={styles.glowOverlay} />
@@ -210,7 +216,7 @@ export default function Home() {
       </div>
 
       <div className={styles.dashboard}>
-        <SeleneCalendar />
+        <SeleneCalendar events={events} onEventClick={handleEventClick} />
         <div className={styles.card}>
           <span className={styles.cardLabel}>Events</span>
           <span className={styles.cardValue}>{events.length}</span>
@@ -255,4 +261,5 @@ export default function Home() {
       )}
     </main>
   );
+  
 }

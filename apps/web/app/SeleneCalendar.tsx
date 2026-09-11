@@ -7,20 +7,28 @@ import '@fullcalendar/react/skeleton.css'; // ALWAYS NEED SKELETON
 import '@fullcalendar/react/themes/monarch/theme.css'; // YOUR THEME
 import '@fullcalendar/react/themes/monarch/palettes/purple.css';
 
+interface SimpleEventClickArg {
+  event: {
+    title: string;
+    extendedProps: {
+      description?: string;
+    };
+  };
+}
 
-export function SeleneCalendar(){
-    const controller = useCalendarController();
-    const buttons = controller.getButtonState();
-    return(
-        <FullCalendar
-        headerToolbar={{
-            left: 'prev',
-            center: 'title',
-            right: 'next',
-        }}
-        plugins={[ themePlugin, dayGridPlugin]}
-        initialView="dayGridMonth"
-        selectable={true}
-        />
-    );
-};
+interface SeleneCalendarProps {
+  events: any[];
+  onEventClick?: (info: SimpleEventClickArg) => void;
+}
+
+export function SeleneCalendar({ events, onEventClick }: SeleneCalendarProps) {
+  return (
+    <FullCalendar
+      plugins={[dayGridPlugin]}
+      initialView="dayGridMonth"
+      events={events}
+      eventClick={onEventClick} 
+    />
+  );
+}
+
